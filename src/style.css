@@ -372,20 +372,23 @@ h3 {
   list-style: none;
   border-radius: var(--hand-radius);
   border: 2px solid var(--border);
-  /* Lined index card */
-  background:
-    repeating-linear-gradient(var(--card) 0 39px, var(--card-rule) 39px 40px),
-    var(--card);
+  background: var(--card);
   box-shadow: 4px 6px 0 rgba(29, 42, 87, 0.15);
 }
 
+/* Rows grow with their text: long names wrap onto two lines on phones instead of overlapping. */
 .suggestions__item {
-  height: 40px;
-  line-height: 40px;
-  padding: 0 14px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--card-rule);
   font-family: var(--font-ui);
   font-size: 1.15rem;
+  line-height: 1.25;
   cursor: pointer;
+}
+
+.suggestions__item:last-child {
+  border-bottom: none;
 }
 
 .suggestions__item[aria-selected='true'],
@@ -394,8 +397,9 @@ h3 {
 }
 
 .btn {
-  height: 52px;
-  padding: 0 18px;
+  min-height: 52px;
+  padding: 6px 18px;
+  line-height: 1.2;
   border-radius: var(--hand-radius);
   border: 2px solid var(--border);
   background: var(--card);
@@ -467,7 +471,7 @@ h3 {
 
 .btn--hint {
   justify-self: start;
-  height: 42px;
+  min-height: 42px;
   font-size: 1.1rem;
   border-style: dashed;
 }
@@ -479,8 +483,8 @@ h3 {
 }
 
 .btn--trait {
-  height: 38px;
-  padding: 0 12px;
+  min-height: 38px;
+  padding: 4px 12px;
   font-size: 1.05rem;
 }
 
@@ -747,6 +751,12 @@ h3 {
 @media (prefers-color-scheme: light) {
   .result__kicker {
     color: #1f7a3f;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .result__kicker {
+    color: #7fd99a; /* light chalk green: readable on the dark board */
   }
 }
 
