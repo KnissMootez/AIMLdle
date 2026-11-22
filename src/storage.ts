@@ -58,6 +58,30 @@ export function loadState(): SavedState {
   }
 }
 
+const PREFS_KEY = 'aimldle:prefs';
+
+export interface Prefs {
+  /** Shrink the board to fit the screen width instead of scrolling sideways. */
+  fitBoard: boolean;
+}
+
+export function loadPrefs(): Prefs {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(PREFS_KEY) ?? '{}') as Partial<Prefs>;
+    return { fitBoard: parsed.fitBoard === true };
+  } catch {
+    return { fitBoard: false };
+  }
+}
+
+export function savePrefs(prefs: Prefs): void {
+  try {
+    localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+  } catch {
+    // Storage unavailable: the preference just won't be remembered.
+  }
+}
+
 const SESSION_KEY = 'aimldle:dev-session';
 
 /** Dev only: wipe saved progress if the dev server was restarted since the last visit. */

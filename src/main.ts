@@ -15,7 +15,7 @@ import { guessesUntilNextHint, hintsAvailable, HINT_EVERY, MAX_HINTS, type Trait
 import { findExact, findMatches, normalize } from './search.ts';
 import { buildShareText } from './share.ts';
 import { BUCKETS, bucket, displayStreak, recordGiveUp, recordStart, recordWin } from './stats.ts';
-import { loadState, resetIfNewDevSession, saveState } from './storage.ts';
+import { loadPrefs, loadState, resetIfNewDevSession, savePrefs, saveState } from './storage.ts';
 import { ANSWER_POOL, TERMS, TERMS_BY_ID } from './terms.ts';
 
 // ---------- State ----------
@@ -102,6 +102,8 @@ const els = {
   hints: $<HTMLElement>('hints'),
   result: $<HTMLElement>('result'),
   boardWrap: $<HTMLDivElement>('board-wrap'),
+  boardTools: $<HTMLDivElement>('board-tools'),
+  fitBtn: $<HTMLButtonElement>('fit-btn'),
   board: $<HTMLDivElement>('board'),
   help: $<HTMLDialogElement>('help-dialog'),
   about: $<HTMLDialogElement>('about-dialog'),
@@ -440,7 +442,39 @@ function renderBoard(animateLatest: boolean): void {
     );
   });
   els.board.replaceChildren(header, ...body);
+  applyFit();
 }
+
+// ---------- Fit board to screen ----------
+
+const prefs = loadPrefs();
+
+/**
+ * When the board is wider than the screen, offer a toggle that shrinks it (CSS zoom) so all
+ * columns are visible at once. Otherwise the board scrolls sideways with the term column pinned.
+ */
+function applyFit(): void {
+  els.board.style.zoom = '';
+  if (els.boardWrap.hidden) {
+    els.boardTools.hidden = true;
+    return;
+  }
+  const styles = getComputedStyle(els.boardWrap);
+  const available = els.boardWrap.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
+  const natural = els.board.scrollWidth;
+  const overflows = natural > available + 1;
+  els.boardTools.hidden = !overflows;
+  els.fitBtn.textContent = prefs.fitBoard ? '⤡ Actual size' : '⤢ Fit to screen';
+  els.fitBtn.setAttribute('aria-pressed', String(prefs.fitBoard));
+  if (overflows && prefs.fitBoard) els.board.style.zoom = String(available / natural);
+}
+
+els.fitBtn.addEventListener('click', () => {
+  prefs.fitBoard = !prefs.fitBoard;
+  savePrefs(prefs);
+  applyFit();
+});
+window.addEventListener('resize', applyFit);
 
 let countdownTimer: number | undefined;
 

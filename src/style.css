@@ -560,15 +560,41 @@ h3 {
   padding-bottom: 4px;
 }
 
-/* Keep the term name visible while scrolling sideways on phones. */
-.board__name {
+/* Keep the term name visible while scrolling sideways on phones.
+   `.tile.board__name` beats `.tile { position: relative }`, which comes later in this file. */
+.board__name,
+.tile.board__name {
   position: sticky;
   left: 0;
-  z-index: 1;
+  z-index: 2;
+}
+
+/* A strip of page colour to the left of the pinned cards, so scrolled tiles don't peek out
+   through the board's side padding. */
+.tile.board__name {
+  box-shadow: var(--shadow), -18px 0 0 0 var(--paper);
+}
+
+/* "Fit to screen" toggle, shown only when the board is wider than the screen. */
+.board-tools {
+  display: flex;
+  justify-content: flex-end;
+  margin: 4px 0 -2px;
+}
+
+.board-tools[hidden] {
+  display: none;
+}
+
+.link-btn.board-tools__fit {
+  font-family: var(--font-ui);
+  font-size: 1.05rem;
+  color: var(--accent);
 }
 
 .board__head.board__name {
   background-color: var(--paper);
+  box-shadow: -24px 0 0 0 var(--paper);
 }
 
 .tile {
