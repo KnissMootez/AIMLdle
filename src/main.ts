@@ -822,6 +822,7 @@ function openAbout(): void {
     h('h3', {}, 'Credits'),
     h('p', {}, 'Idea and testing by Mootez Kniss. Built with Claude Code.'),
     h('p', { class: 'muted' }, 'Topic list inspired by StatQuest with Josh Starmer. Not affiliated with StatQuest.'),
+    h('p', { class: 'muted' }, '© 2026 Mootez Kniss. All rights reserved.'),
   );
   els.about.showModal();
 }

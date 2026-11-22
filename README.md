@@ -1,10 +1,14 @@
 # AIMLdle
 
+**▶ Play: [knissmootez.github.io/AIMLdle](https://knissmootez.github.io/AIMLdle/)**
+
 **A daily guessing game for AI / machine learning terms.** Guess today's term, and every guess shows
 how its attributes compare with the answer. When you solve it, you get a short explanation and the
 source behind it, so every round teaches you something.
 
-🟥🟧🟩⬆️  · 228 terms, from Bernoulli's law of large numbers (1713) to DPO (2023) · new term every day at 00:00 UTC
+🟥🟧🟩⬆️  · 228 terms, from Leibniz's chain rule (1676) to DPO (2023) · new term every day at 00:00 UTC
+
+<p align="center"><img src="docs/demo.gif" alt="AIMLdle demo: guessing LoRA in 5 guesses with one hint" width="400" /></p>
 
 ## How to play
 
@@ -88,4 +92,9 @@ Netlify or any static host.
 ## Credits
 
 Idea and testing: Mootez Kniss. Code written with Claude Code.
-Topic list inspired by StatQuest with Josh Starmer.
+Topic list inspired by StatQuest with Josh Starmer (not affiliated).
+
+## License
+
+© 2026 Mootez Kniss. All rights reserved. See [LICENSE](LICENSE): you're welcome to play and read the
+code, but please don't copy or re-host the game, its term dataset or its design.
