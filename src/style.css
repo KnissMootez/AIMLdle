@@ -23,6 +23,7 @@
   --accent: #2747b8;
   --accent-text: #ffffff;
   --highlight: #ffe66d;
+  --highlight-2: #a9d8ff;
   --tape: rgba(255, 230, 150, 0.75);
   --shadow: 2px 3px 0 rgba(29, 42, 87, 0.18);
   --doodle: rgba(29, 42, 87, 0.16);
@@ -59,6 +60,7 @@
     --accent: #f4d35e;
     --accent-text: #1f2b25;
     --highlight: rgba(244, 211, 94, 0.45);
+    --highlight-2: rgba(120, 190, 255, 0.4);
     --tape: rgba(244, 211, 94, 0.35);
     --shadow: 2px 3px 0 rgba(0, 0, 0, 0.35);
     --doodle: rgba(238, 241, 234, 0.12);
@@ -227,11 +229,26 @@ h3 {
   white-space: nowrap;
 }
 
-/* Highlighter swipe behind "AIML". */
-.logo__ai {
-  margin-right: -0.04em;
-  background: linear-gradient(100deg, transparent 2%, var(--highlight) 6%, var(--highlight) 94%, transparent 98%)
+/* Two highlighter swipes split the name visually: AI · ML dle. */
+.logo__ai,
+.logo__ml {
+  background: linear-gradient(100deg, transparent 2%, var(--hl) 7%, var(--hl) 93%, transparent 98%)
     no-repeat 0 62% / 100% 45%;
+}
+
+.logo__ai {
+  --hl: var(--highlight);
+}
+
+.logo__ml {
+  --hl: var(--highlight-2);
+  margin-right: -0.03em;
+}
+
+.logo__dot {
+  margin: 0 0.04em;
+  color: var(--muted);
+  font-weight: 600;
 }
 
 .logo__tag {
