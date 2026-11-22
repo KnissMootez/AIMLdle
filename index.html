@@ -45,7 +45,12 @@
     </div>
 
     <header class="topbar">
-      <button class="icon-btn" id="help-btn" type="button" aria-label="How to play" title="How to play">?</button>
+      <div class="topbar__actions">
+        <button class="icon-btn" id="help-btn" type="button" aria-label="How to play" title="How to play">?</button>
+        <button class="icon-btn" id="browse-btn" type="button" aria-label="Browse all terms" title="Browse all terms">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M3 4.5C3 3.67 3.67 3 4.5 3H10c1.07 0 2.02.5 2.62 1.28A3.3 3.3 0 0 1 15.25 3h4.25c.83 0 1.5.67 1.5 1.5V18a1 1 0 0 1-1 1h-4.75c-.97 0-1.75.78-1.75 1.75a.75.75 0 0 1-1.5 0c0-.97-.78-1.75-1.75-1.75H4a1 1 0 0 1-1-1V4.5ZM12 7.25C12 6.01 11 5 9.75 5H5v12h5c.73 0 1.4.22 1.98.6L12 7.25Zm2 10.35c.57-.38 1.25-.6 1.98-.6H19V5h-3.75C14.01 5 13 6 13 7.25L14 17.6Z"/></svg>
+        </button>
+      </div>
       <h1 class="logo" aria-label="AIMLdle"><span class="logo__word" aria-hidden="true"><span class="logo__ai">AI</span><span class="logo__dot">·</span><span class="logo__ml">ML</span>dle</span><span class="logo__tag">daily ML flashcards</span></h1>
       <div class="topbar__actions">
         <button class="icon-btn" id="archive-btn" type="button" aria-label="Past days" title="Past days">
@@ -79,10 +84,7 @@
         </div>
         <button class="btn btn--primary" type="submit">Guess</button>
       </form>
-      <div class="guess__meta">
-        <p class="guess__error" id="guess-error" role="alert"></p>
-        <button class="link-btn browse-btn" id="browse-btn" type="button">📖 Browse all terms</button>
-      </div>
+      <p class="guess__error" id="guess-error" role="alert"></p>
 
       <section class="hints" id="hints" hidden aria-live="polite"></section>
 

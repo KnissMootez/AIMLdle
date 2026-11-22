@@ -621,7 +621,7 @@ function openHelp(): void {
         els.help.close();
         openTerms();
       });
-      p.append(b, ' (AI, Markov Chain, Precision, Transformer…).');
+      p.append(b, ' (AI, Markov Chain, Precision, Transformer…), or use the 📖 button at the top.');
       return p;
     })(),
     h('p', {}, 'Each guess shows how its attributes compare with the answer:'),
@@ -836,7 +836,7 @@ $('help-btn').addEventListener('click', openHelp);
 $('stats-btn').addEventListener('click', openStats);
 $('about-btn').addEventListener('click', openAbout);
 $('archive-btn').addEventListener('click', openArchive);
-els.browse.textContent = `📖 Browse all ${TERMS.length} terms`;
+els.browse.title = `Browse all ${TERMS.length} terms`;
 els.browse.addEventListener('click', openTerms);
 
 // ---------- Start ----------
