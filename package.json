@@ -1,0 +1,21 @@
+{
+  "name": "aimldle",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A daily guessing game for AI / ML terms.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run check && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "validate": "node scripts/validate.js",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run validate && npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.1"
+  }
+}

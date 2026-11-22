@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AIMLdle: daily AI / ML term guessing game</title>
+    <meta
+      name="description"
+      content="Guess the daily AI / machine learning term. Each guess shows which attributes match, and every round ends with a short explanation of the term."
+    />
+    <meta name="theme-color" content="#fdfaf2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1f2b25" media="(prefers-color-scheme: dark)" />
+    <meta property="og:title" content="AIMLdle" />
+    <meta property="og:description" content="Guess today's AI / ML term. Learn something every round." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='6' y='6' width='88' height='88' rx='10' fill='%23fdfaf2' stroke='%231d2a57' stroke-width='6'/><rect x='14' y='52' width='72' height='24' fill='%23ffe66d'/><text x='50' y='70' font-size='46' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-weight='700' fill='%231d2a57'>ML</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Caveat:wght@600;700&family=Patrick+Hand&display=swap"
+    />
+  </head>
+  <body>
+    <!-- Decorative margin doodles (wide screens only). -->
+    <div class="doodles" aria-hidden="true">
+      <span class="doodle doodle--1">σ(x) = 1 / (1 + e<sup>−x</sup>)</span>
+      <span class="doodle doodle--2">θ ← θ − η∇L(θ)</span>
+      <span class="doodle doodle--3">P(A|B) = P(B|A)P(A) / P(B)</span>
+      <span class="doodle doodle--4">ŷ = argmax softmax(Wx + b)</span>
+      <svg class="doodle doodle--curve" viewBox="0 0 160 110" width="160" height="110">
+        <path d="M10 10 V100 H155" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M14 18 C 40 70, 60 82, 90 88 S 140 92, 150 93" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+        <text x="18" y="12" font-size="12" fill="currentColor">loss</text>
+        <text x="118" y="108" font-size="12" fill="currentColor">epoch</text>
+      </svg>
+      <svg class="doodle doodle--net" viewBox="0 0 120 90" width="120" height="90">
+        <g fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M15 20 L60 15 M15 20 L60 45 M15 20 L60 75 M15 70 L60 15 M15 70 L60 45 M15 70 L60 75 M60 15 L105 45 M60 45 L105 45 M60 75 L105 45" />
+          <circle cx="15" cy="20" r="7" /><circle cx="15" cy="70" r="7" />
+          <circle cx="60" cy="15" r="7" /><circle cx="60" cy="45" r="7" /><circle cx="60" cy="75" r="7" />
+          <circle cx="105" cy="45" r="7" />
+        </g>
+      </svg>
+    </div>
+
+    <header class="topbar">
+      <button class="icon-btn" id="help-btn" type="button" aria-label="How to play" title="How to play">?</button>
+      <h1 class="logo"><span class="logo__word"><span class="logo__ai">AIML</span>dle</span><span class="logo__tag">daily ML flashcards</span></h1>
+      <div class="topbar__actions">
+        <button class="icon-btn" id="archive-btn" type="button" aria-label="Past days" title="Past days">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3V2Zm12 8H5v9h14v-9ZM5 8h14V6H5v2Zm2 4h3v3H7v-3Z"/></svg>
+        </button>
+        <button class="icon-btn" id="stats-btn" type="button" aria-label="Statistics" title="Statistics">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4 20h3V10H4v10Zm6.5 0h3V4h-3v16ZM17 20h3v-7h-3v7Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="container">
+      <p class="status" id="status" aria-live="polite"></p>
+
+      <form class="guess" id="guess-form" autocomplete="off">
+        <div class="guess__field">
+          <input
+            id="guess-input"
+            class="guess__input"
+            type="text"
+            placeholder="Type an AI / ML term…"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="suggestions"
+            aria-label="Guess a term"
+            spellcheck="false"
+            autocapitalize="off"
+          />
+          <ul class="suggestions" id="suggestions" role="listbox" hidden></ul>
+        </div>
+        <button class="btn btn--primary" type="submit">Guess</button>
+      </form>
+      <p class="guess__error" id="guess-error" role="alert"></p>
+
+      <section class="hints" id="hints" hidden aria-live="polite"></section>
+
+      <section class="result" id="result" hidden aria-live="polite"></section>
+
+      <div class="board-wrap" id="board-wrap" hidden>
+        <div class="board" id="board" role="table" aria-label="Your guesses, newest first"></div>
+      </div>
+
+      <div class="legend" aria-label="Tile legend">
+        <span class="legend__item"><span class="chip tile--correct">✓</span> match</span>
+        <span class="legend__item"><span class="chip tile--partial">≈</span> partial</span>
+        <span class="legend__item"><span class="chip tile--wrong">✗</span> no match</span>
+        <span class="legend__item"><span class="chip tile--higher">↑</span> answer is higher / later</span>
+        <span class="legend__item"><span class="chip tile--lower">↓</span> answer is lower / earlier</span>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>
+        A new term every day at 00:00 UTC ·
+        <button class="link-btn" id="about-btn" type="button">About</button>
+      </p>
+    </footer>
+
+    <dialog class="dialog" id="about-dialog" aria-labelledby="about-title"></dialog>
+    <dialog class="dialog" id="archive-dialog" aria-labelledby="archive-title"></dialog>
+    <dialog class="dialog" id="help-dialog" aria-labelledby="help-title"></dialog>
+    <dialog class="dialog" id="stats-dialog" aria-labelledby="stats-title"></dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
