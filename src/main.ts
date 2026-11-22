@@ -426,7 +426,7 @@ function renderBoard(animateLatest: boolean): void {
   const rows = [...game.guesses].reverse();
   els.boardWrap.hidden = rows.length === 0;
   const header = h('div', { class: 'board__row board__row--head', role: 'row' },
-    h('div', { class: 'board__head board__name', role: 'columnheader' }, 'Term'),
+    h('div', { class: 'board__pin', role: 'columnheader' }, h('div', { class: 'board__head' }, 'Term')),
     ...COLUMNS.map((c) => h('div', { class: 'board__head', role: 'columnheader' }, c.label)),
   );
   const body = rows.map((guess, i) => {
@@ -434,10 +434,11 @@ function renderBoard(animateLatest: boolean): void {
     const tiles = compareTerms(guess, game.answer);
     const allCorrect = guess.id === game.answer.id;
     return h('div', { class: 'board__row', role: 'row' },
-      h('div', {
-        class: `tile board__name ${allCorrect ? 'tile--correct' : 'tile--term'}${animate ? ' tile--flip' : ''}`,
-        role: 'rowheader',
-      }, guess.name),
+      h('div', { class: 'board__pin', role: 'rowheader' },
+        h('div', {
+          class: `tile board__name ${allCorrect ? 'tile--correct' : 'tile--term'}${animate ? ' tile--flip' : ''}`,
+        }, guess.name),
+      ),
       ...tiles.map((t, idx) => tileNode(t, idx, animate)),
     );
   });
@@ -464,10 +465,23 @@ function applyFit(): void {
   const natural = els.board.scrollWidth;
   const overflows = natural > available + 1;
   els.boardTools.hidden = !overflows;
-  els.fitBtn.textContent = prefs.fitBoard ? '⤡ Actual size' : '⤢ Fit to screen';
+  els.fitBtn.innerHTML = prefs.fitBoard ? `${ICON_SHRINK}<span>Actual size</span>` : `${ICON_EXPAND}<span>Fit to screen</span>`;
   els.fitBtn.setAttribute('aria-pressed', String(prefs.fitBoard));
   if (overflows && prefs.fitBoard) els.board.style.zoom = String(available / natural);
+  updateScrolled();
 }
+
+// Four arrows pointing out (expand) / in (shrink).
+const ICON_EXPAND =
+  '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5M4 4l6 6M20 4l-6 6M4 20l6-6M20 20l-6-6"/></svg>';
+const ICON_SHRINK =
+  '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4v6H4M14 4v6h6M10 20v-6H4M14 20v-6h6M4 4l6 6M20 4l-6 6M4 20l6-6M20 20l-6-6"/></svg>';
+
+/** Mark the board as scrolled sideways, so the pinned term column covers what slides under it. */
+function updateScrolled(): void {
+  els.boardWrap.classList.toggle('is-scrolled', els.boardWrap.scrollLeft > 0);
+}
+els.boardWrap.addEventListener('scroll', updateScrolled, { passive: true });
 
 els.fitBtn.addEventListener('click', () => {
   prefs.fitBoard = !prefs.fitBoard;

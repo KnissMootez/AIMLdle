@@ -560,41 +560,53 @@ h3 {
   padding-bottom: 4px;
 }
 
-/* Keep the term name visible while scrolling sideways on phones.
-   `.tile.board__name` beats `.tile { position: relative }`, which comes later in this file. */
-.board__name,
-.tile.board__name {
+/* Pinned "Term" column (phones scroll the board sideways).
+   Each term cell sits in a .board__pin wrapper that reaches the scroll area's left edge
+   (negative margin + matching padding = the board-wrap's 16px side padding), so nothing can show
+   to its left. While the board is scrolled, the wrapper (and the gaps around it) are filled with
+   page colour, so tiles slide fully under the card and disappear. At rest it's transparent. */
+.board__pin {
+  --pin-pad: 16px;
   position: sticky;
-  left: 0;
+  left: calc(-1 * var(--pin-pad));
   z-index: 2;
+  display: flex;
+  margin-left: calc(-1 * var(--pin-pad));
+  padding-left: var(--pin-pad);
 }
 
-/* A strip of page colour to the left of the pinned cards, so scrolled tiles don't peek out
-   through the board's side padding. */
-.tile.board__name {
-  box-shadow: var(--shadow), -18px 0 0 0 var(--paper);
+.board__pin > * {
+  flex: 1;
 }
 
-/* "Fit to screen" toggle, shown only when the board is wider than the screen. */
+.board-wrap.is-scrolled .board__pin {
+  background-color: var(--paper);
+  /* also cover the column gap to the right and half the row gaps above/below */
+  box-shadow: var(--gap) 0 0 calc(var(--gap) / 2) var(--paper);
+}
+
+/* "Fit to screen" toggle, centred under the board; shown only when the board is wider than the screen. */
 .board-tools {
   display: flex;
-  justify-content: flex-end;
-  margin: 4px 0 -2px;
+  justify-content: center;
+  margin: 10px 0 0;
 }
 
 .board-tools[hidden] {
   display: none;
 }
 
-.link-btn.board-tools__fit {
-  font-family: var(--font-ui);
-  font-size: 1.05rem;
-  color: var(--accent);
+.btn.board-tools__fit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 16px;
+  font-size: 1.1rem;
 }
 
-.board__head.board__name {
-  background-color: var(--paper);
-  box-shadow: -24px 0 0 0 var(--paper);
+.board-tools__fit svg {
+  flex-shrink: 0;
 }
 
 .tile {
