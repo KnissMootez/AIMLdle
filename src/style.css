@@ -625,10 +625,18 @@ h3 {
   background: var(--wrong);
 }
 
+/* Close years: orange, still with the direction arrow. */
+.tile--higher-close,
+.tile--lower-close {
+  background: var(--partial);
+}
+
 /* Only on real tiles (.tile is position: relative). The legend chips reuse the colour classes and
    must not get this arrow, or it gets positioned against the whole page. */
 .tile.tile--higher::before,
-.tile.tile--lower::before {
+.tile.tile--lower::before,
+.tile.tile--higher-close::before,
+.tile.tile--lower-close::before {
   position: absolute;
   inset: 0;
   display: grid;
@@ -640,15 +648,19 @@ h3 {
   pointer-events: none;
 }
 
-.tile.tile--higher::before { content: '↑'; }
-.tile.tile--lower::before { content: '↓'; }
+.tile.tile--higher::before,
+.tile.tile--higher-close::before { content: '↑'; }
+.tile.tile--lower::before,
+.tile.tile--lower-close::before { content: '↓'; }
 
 .tile__text {
   position: relative;
 }
 
 .tile--higher .tile__text,
-.tile--lower .tile__text {
+.tile--lower .tile__text,
+.tile--higher-close .tile__text,
+.tile--lower-close .tile__text {
   font-size: 1.2rem;
 }
 

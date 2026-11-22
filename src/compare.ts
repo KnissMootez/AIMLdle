@@ -2,9 +2,13 @@ import { COLUMNS, DIFFICULTIES, type Column, type Difficulty, type Term } from '
 
 /**
  * correct = exact match, partial = some overlap (multi-value only), wrong = no match,
- * higher / lower = the ANSWER is higher / lower than the guess (number and ordinal columns).
+ * higher / lower = the ANSWER is higher / lower than the guess (number and ordinal columns),
+ * higher-close / lower-close = same, but within YEAR_CLOSE_WITHIN (shown orange, with the arrow).
  */
-export type TileState = 'correct' | 'partial' | 'wrong' | 'higher' | 'lower';
+export type TileState = 'correct' | 'partial' | 'wrong' | 'higher' | 'lower' | 'higher-close' | 'lower-close';
+
+/** A guessed year this close to the answer (but not equal) counts as "close": orange + arrow. */
+export const YEAR_CLOSE_WITHIN = 5;
 
 export interface Tile {
   column: Column;
@@ -25,9 +29,11 @@ export function compareMulti(guess: readonly string[], answer: readonly string[]
   return shared > 0 ? 'partial' : 'wrong';
 }
 
-export function compareNumber(guess: number, answer: number): TileState {
+export function compareNumber(guess: number, answer: number, closeWithin = 0): TileState {
   if (guess === answer) return 'correct';
-  return answer > guess ? 'higher' : 'lower';
+  const close = Math.abs(answer - guess) <= closeWithin;
+  if (answer > guess) return close ? 'higher-close' : 'higher';
+  return close ? 'lower-close' : 'lower';
 }
 
 export function compareDifficulty(guess: Difficulty, answer: Difficulty): TileState {
@@ -44,7 +50,7 @@ function compareColumn(column: Column, guess: Term, answer: Term): TileState {
     case 'learningType':
       return compareMulti(guess[column.key], answer[column.key]);
     case 'year':
-      return compareNumber(guess.year, answer.year);
+      return compareNumber(guess.year, answer.year, YEAR_CLOSE_WITHIN);
     case 'difficulty':
       return compareDifficulty(guess.difficulty, answer.difficulty);
   }

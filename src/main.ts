@@ -9,7 +9,7 @@ import {
   TASKS,
   type Term,
 } from './attributes.ts';
-import { compareTerms, type Tile, type TileState } from './compare.ts';
+import { compareTerms, YEAR_CLOSE_WITHIN, type Tile, type TileState } from './compare.ts';
 import { dailyTerm, msUntilNextPuzzle, puzzleDate, puzzleNumber } from './daily.ts';
 import { guessesUntilNextHint, hintsAvailable, HINT_EVERY, MAX_HINTS, type TraitKey } from './hints.ts';
 import { findExact, findMatches, normalize } from './search.ts';
@@ -112,13 +112,23 @@ const els = {
   toast: $<HTMLDivElement>('toast'),
 };
 
-const ICON: Record<TileState, string> = { correct: '✓', partial: '≈', wrong: '✗', higher: '↑', lower: '↓' };
+const ICON: Record<TileState, string> = {
+  correct: '✓',
+  partial: '≈',
+  wrong: '✗',
+  higher: '↑',
+  lower: '↓',
+  'higher-close': '≈↑',
+  'lower-close': '≈↓',
+};
 const STATE_LABEL: Record<TileState, string> = {
   correct: 'match',
   partial: 'partial match',
   wrong: 'no match',
   higher: 'answer is higher',
   lower: 'answer is lower',
+  'higher-close': `close: answer is up to ${YEAR_CLOSE_WITHIN} higher`,
+  'lower-close': `close: answer is up to ${YEAR_CLOSE_WITHIN} lower`,
 };
 
 // Soft hyphens (­) mark where long words may break in narrow tiles, e.g. "Classifi-cation".
@@ -628,6 +638,8 @@ function openHelp(): void {
     h('ul', { class: 'help__legend' },
       h('li', {}, h('span', { class: 'chip tile--correct' }, '✓'), ' same value'),
       h('li', {}, h('span', { class: 'chip tile--partial' }, '≈'), ' some values shared (Task, Learning)'),
+      h('li', {}, h('span', { class: 'chip tile--partial' }, '↑'), h('span', { class: 'chip tile--partial' }, '↓'),
+        ` close: the year is within ${YEAR_CLOSE_WITHIN}, and the arrow says which way`),
       h('li', {}, h('span', { class: 'chip tile--wrong' }, '✗'), ' nothing shared'),
       h('li', {}, h('span', { class: 'chip tile--higher' }, '↑'), h('span', { class: 'chip tile--lower' }, '↓'),
         ' the answer is later / harder (↑) or earlier / easier (↓)'),

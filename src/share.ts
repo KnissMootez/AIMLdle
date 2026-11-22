@@ -6,6 +6,9 @@ export const SHARE_EMOJI: Record<TileState, string> = {
   wrong: '🟥',
   higher: '⬆️',
   lower: '⬇️',
+  // Close years show as orange in the share grid (direction isn't needed to stay spoiler-free).
+  'higher-close': '🟧',
+  'lower-close': '🟧',
 };
 
 export interface ShareOptions {

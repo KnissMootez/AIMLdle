@@ -73,6 +73,26 @@ describe('compareNumber', () => {
   it('says "lower" when the answer is earlier than the guess', () => {
     expect(compareNumber(2017, 1805)).toBe('lower');
   });
+
+  it('marks numbers within the window as close, keeping the direction', () => {
+    expect(compareNumber(2014, 2017, 5)).toBe('higher-close');
+    expect(compareNumber(2021, 2017, 5)).toBe('lower-close');
+    expect(compareNumber(2012, 2017, 5)).toBe('higher-close'); // exactly 5 away still counts
+    expect(compareNumber(2011, 2017, 5)).toBe('higher');
+    expect(compareNumber(2017, 2017, 5)).toBe('correct');
+  });
+
+  it('has no close zone by default', () => {
+    expect(compareNumber(2016, 2017)).toBe('higher');
+  });
+});
+
+describe('year column', () => {
+  it('uses the close window for years, but not for difficulty', () => {
+    const tiles = compareTerms(term({ year: 2014, difficulty: 'Beginner' }), term({ year: 2017, difficulty: 'Intermediate' }));
+    expect(tiles.find((t) => t.column.key === 'year')?.state).toBe('higher-close');
+    expect(tiles.find((t) => t.column.key === 'difficulty')?.state).toBe('higher');
+  });
 });
 
 describe('compareDifficulty', () => {

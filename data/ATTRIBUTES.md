@@ -21,7 +21,8 @@ with deep learning and transformers at the end. The attributes below are tuned f
 **Multi-value feedback:** green = exactly the same set, orange = at least one shared value,
 red = nothing shared.
 **Number and ordinal feedback:** green = equal; ↑ = the answer is higher/later; ↓ = the answer is
-lower/earlier.
+lower/earlier. **Year only:** within ±5 years (`YEAR_CLOSE_WITHIN` in `src/compare.ts`) the tile is
+orange and keeps its arrow.
 
 ---
 
@@ -62,10 +63,12 @@ Values: `Classification`, `Regression`, `Clustering`, `Dimensionality reduction`
 - `Recommendation` = suggesting items to users: Collaborative Filtering, Matrix Factorization.
 - Datasets: the task they're mainly used to benchmark.
 
-- List only the tasks the term is **mainly** used for, not every possible use.
+- List every task the term is **commonly** used for: the uses a textbook or the standard libraries
+  cover (SVM → Classification + Regression via SVR), not every exotic possibility.
 - `General` = used across most tasks (Gradient Descent, Chain Rule). **`General` is used alone.**
-- Metrics: use the task they measure (AUC → Classification; R-squared → Regression). Use
-  `Evaluation` only for things that judge any model (Cross Validation, Bias–Variance Tradeoff).
+- Metrics: the task they measure **plus `Evaluation`** (AUC → Classification + Evaluation;
+  R-squared → Regression + Evaluation). Correlations (Pearson, Spearman) are measures of association,
+  not model evaluation, so they don't get `Evaluation`.
 - Statistical tests (t-test, ANOVA, p-value) → `Evaluation`.
 
 *Why replace Domain:* with these terms, 80%+ would be "General" or "Tabular", so the
@@ -76,7 +79,8 @@ Domain can come back when the list has more NLP/vision terms.
 
 Values: `Supervised`, `Unsupervised`, `Self-supervised`, `Reinforcement`, `N/A`
 
-- The learning setting the term is **used in**, not whether it could technically be adapted.
+- Every learning setting the term is **commonly trained in**, not whether it could technically be
+  adapted. Pre-train + fine-tune models list both (BERT, GPT, T5 → Self-supervised + Supervised).
 - Self-supervised = labels made from the data itself (Word2Vec, BERT pre-training, GPT-style).
 - **Only Models and Techniques have a learning type.** Every other category (Metric,
   Statistical test, Concept, Component, Optimization, Tool) is `N/A`. The validator enforces this.
@@ -178,5 +182,9 @@ Every term can still be **guessed**.
 - **2026-11-22:** Batch 3 brings the total to 228 terms. Added the `daily` flag (split answer pool). New values: Category
   `Dataset` (MNIST, ImageNet, Iris, COCO), Task `Recommendation`, Field `Physics` (Hopfield,
   simulated annealing, MCMC).
+- **2026-11-23:** Orange showed up in only ~5% of guesses. Two changes: (1) years within ±5 are orange
+  "close" tiles; (2) Task / Learning now list every *common* use, not only the main one (50 terms retagged:
+  metrics gain `Evaluation`, SVR/AdaBoost/GLM/GP gain a second task, sequence models gain `Generation`,
+  pre-train + fine-tune models gain `Supervised`, RLHF gains `Control`). Orange now appears in ~22% of rows.
 - **2026-11-22:** `emoji`, `definitionHint` and `paper` are left out of the v1 schema (they're only needed
   for the later game modes). Add them when those modes are built.
