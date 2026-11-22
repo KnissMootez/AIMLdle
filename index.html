@@ -79,7 +79,10 @@
         </div>
         <button class="btn btn--primary" type="submit">Guess</button>
       </form>
-      <p class="guess__error" id="guess-error" role="alert"></p>
+      <div class="guess__meta">
+        <p class="guess__error" id="guess-error" role="alert"></p>
+        <button class="link-btn browse-btn" id="browse-btn" type="button">📖 Browse all terms</button>
+      </div>
 
       <section class="hints" id="hints" hidden aria-live="polite"></section>
 
@@ -107,6 +110,7 @@
 
     <dialog class="dialog" id="about-dialog" aria-labelledby="about-title"></dialog>
     <dialog class="dialog" id="archive-dialog" aria-labelledby="archive-title"></dialog>
+    <dialog class="dialog dialog--wide" id="terms-dialog" aria-labelledby="terms-title"></dialog>
     <dialog class="dialog" id="help-dialog" aria-labelledby="help-title"></dialog>
     <dialog class="dialog" id="stats-dialog" aria-labelledby="stats-title"></dialog>
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>

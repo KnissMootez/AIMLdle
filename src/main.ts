@@ -12,7 +12,7 @@ import {
 import { compareTerms, type Tile, type TileState } from './compare.ts';
 import { dailyTerm, msUntilNextPuzzle, puzzleDate, puzzleNumber } from './daily.ts';
 import { guessesUntilNextHint, hintsAvailable, HINT_EVERY, MAX_HINTS, type TraitKey } from './hints.ts';
-import { findExact, findMatches } from './search.ts';
+import { findExact, findMatches, normalize } from './search.ts';
 import { buildShareText } from './share.ts';
 import { BUCKETS, bucket, displayStreak, recordGiveUp, recordStart, recordWin } from './stats.ts';
 import { loadState, resetIfNewDevSession, saveState } from './storage.ts';
@@ -106,6 +106,8 @@ const els = {
   help: $<HTMLDialogElement>('help-dialog'),
   about: $<HTMLDialogElement>('about-dialog'),
   archive: $<HTMLDialogElement>('archive-dialog'),
+  terms: $<HTMLDialogElement>('terms-dialog'),
+  browse: $<HTMLButtonElement>('browse-btn'),
   stats: $<HTMLDialogElement>('stats-dialog'),
   toast: $<HTMLDivElement>('toast'),
 };
@@ -612,6 +614,16 @@ function openHelp(): void {
     closeButton(els.help),
     h('h2', { id: 'help-title' }, 'How to play'),
     h('p', {}, `Guess today's AI / ML term in as few tries as you can, from ${TERMS.length} terms.`),
+    (() => {
+      const p = h('p', {}, 'Not sure what to type? ');
+      const b = h('button', { class: 'link-btn', type: 'button' }, `Browse all ${TERMS.length} terms`);
+      b.addEventListener('click', () => {
+        els.help.close();
+        openTerms();
+      });
+      p.append(b, ' (AI, Markov Chain, Precision, Transformer…).');
+      return p;
+    })(),
     h('p', {}, 'Each guess shows how its attributes compare with the answer:'),
     h('ul', { class: 'help__legend' },
       h('li', {}, h('span', { class: 'chip tile--correct' }, '✓'), ' same value'),
@@ -664,6 +676,82 @@ function openStats(): void {
   );
   if (s.played === 0) els.stats.append(h('p', { class: 'muted' }, 'Play a daily round to start your stats.'));
   els.stats.showModal();
+}
+
+/**
+ * Browsable list of every guessable term, names only (showing traits would make it a cheat sheet).
+ * Clicking a name puts it in the input; the player still confirms the guess.
+ */
+function openTerms(): void {
+  const guessed = guessedIds();
+  const sorted = [...TERMS].sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
+  const firstChar = (name: string) => {
+    const c = normalize(name).charAt(0).toUpperCase();
+    return /[A-Z]/.test(c) ? c : '#';
+  };
+
+  const filter = h('input', {
+    class: 'guess__input terms__filter',
+    type: 'search',
+    placeholder: 'Filter terms…',
+    'aria-label': 'Filter terms',
+    autocomplete: 'off',
+    spellcheck: 'false',
+  });
+  const list = h('div', { class: 'terms__list' });
+  const empty = h('p', { class: 'muted', hidden: '' }, 'No term matches that.');
+
+  const renderList = () => {
+    const matches = new Set(findMatches(TERMS, filter.value, new Set(), TERMS.length).map((t) => t.id));
+    const shown = filter.value.trim() ? sorted.filter((t) => matches.has(t.id)) : sorted;
+    empty.hidden = shown.length > 0;
+    const groups = new Map<string, Term[]>();
+    for (const t of shown) {
+      const key = firstChar(t.name);
+      groups.set(key, [...(groups.get(key) ?? []), t]);
+    }
+    list.replaceChildren(
+      ...[...groups].map(([letter, group]) =>
+        h('section', { class: 'terms__group' },
+          h('h3', { class: 'terms__letter' }, letter),
+          h('ul', {},
+            ...group.map((t) => {
+              const done = guessed.has(t.id);
+              const b = h('button', { class: `terms__item${done ? ' terms__item--guessed' : ''}`, type: 'button' }, t.name);
+              if (done) {
+                b.disabled = true;
+                b.title = 'Already guessed';
+              } else {
+                b.addEventListener('click', () => {
+                  els.terms.close();
+                  if (isOver(game)) return;
+                  els.input.value = t.name;
+                  els.input.focus();
+                  updateSuggestions();
+                });
+              }
+              return h('li', {}, b);
+            }),
+          ),
+        ),
+      ),
+    );
+  };
+  filter.addEventListener('input', renderList);
+  renderList();
+
+  els.terms.replaceChildren(
+    closeButton(els.terms),
+    h('h2', { id: 'terms-title' }, `All ${TERMS.length} terms`),
+    h('p', { class: 'muted' }, isOver(game)
+      ? 'Every term you can guess in AIMLdle.'
+      : 'Tap a term to put it in the guess box, then press Guess. Crossed-out terms are already on your board.'),
+    filter,
+    empty,
+    list,
+  );
+  els.terms.showModal();
+  filter.focus();
 }
 
 /** Past puzzle numbers, newest first. */
@@ -739,7 +827,7 @@ function openAbout(): void {
 }
 
 // Close a dialog when clicking the backdrop.
-for (const dialog of [els.help, els.stats, els.about, els.archive]) {
+for (const dialog of [els.help, els.stats, els.about, els.archive, els.terms]) {
   dialog.addEventListener('click', (e) => {
     if (e.target === dialog) dialog.close();
   });
@@ -748,6 +836,8 @@ $('help-btn').addEventListener('click', openHelp);
 $('stats-btn').addEventListener('click', openStats);
 $('about-btn').addEventListener('click', openAbout);
 $('archive-btn').addEventListener('click', openArchive);
+els.browse.textContent = `📖 Browse all ${TERMS.length} terms`;
+els.browse.addEventListener('click', openTerms);
 
 // ---------- Start ----------
 
