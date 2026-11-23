@@ -29,8 +29,8 @@ Every tile also shows an icon, so the game works without relying on colour.
 | Task | Classification, Regression, Clustering, Dimensionality reduction, Sequence modeling, Generation, Control, Recommendation, Evaluation, General |
 | Learning | Supervised, Unsupervised, Self-supervised, Reinforcement, N/A |
 | Year | year of the defining publication |
-| Field | Statistics, Mathematics, Information theory, Physics, Computer science, Industry lab |
-| Family | Foundations, Classical ML, Deep learning, LLM era |
+| Field | Statistics, Mathematics, Information theory, Physics, Computer science (academic discipline) |
+| Family | Foundations, Classical ML, Deep learning, Transformer era (kind of method, not time period) |
 | Difficulty | Beginner < Intermediate < Advanced |
 
 The exact rules for every value are in [`data/ATTRIBUTES.md`](data/ATTRIBUTES.md).

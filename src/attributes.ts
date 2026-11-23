@@ -41,10 +41,10 @@ export const FIELDS = [
   'Information theory',
   'Physics',
   'Computer science',
-  'Industry lab',
 ] as const;
 
-export const FAMILIES = ['Foundations', 'Classical ML', 'Deep learning', 'LLM era'] as const;
+/** The kind of method (its lineage), not the time period. */
+export const FAMILIES = ['Foundations', 'Classical ML', 'Deep learning', 'Transformer era'] as const;
 
 /** Ordered from easiest to hardest: the order matters for ↑ / ↓ feedback. */
 export const DIFFICULTIES = ['Beginner', 'Intermediate', 'Advanced'] as const;

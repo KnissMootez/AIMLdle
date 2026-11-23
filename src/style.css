@@ -27,7 +27,6 @@
   --tape: rgba(255, 230, 150, 0.75);
   --shadow: 2px 3px 0 rgba(29, 42, 87, 0.18);
   --doodle: rgba(29, 42, 87, 0.16);
-  --pen-red: rgba(200, 40, 40, 0.4);
 
   /* Tiles: highlighter colours with dark ink text (all well above WCAG AA). */
   --correct: #a6e3a1;
@@ -64,7 +63,6 @@
     --tape: rgba(244, 211, 94, 0.35);
     --shadow: 2px 3px 0 rgba(0, 0, 0, 0.35);
     --doodle: rgba(238, 241, 234, 0.12);
-    --pen-red: rgba(0, 0, 0, 0.28);
 
     /* Coloured chalk: white text stays above 4.5:1. */
     --correct: #2e7a4a;
@@ -661,39 +659,29 @@ h3 {
     var(--term);
 }
 
-/* Number/ordinal misses: red card with a big red-pen arrow behind the value. */
+/* Number/ordinal misses: red card. Close years: orange. The direction is the corner arrow
+   (a big faded arrow behind the value made numbers like "1953" harder to read). */
 .tile--higher,
 .tile--lower {
   background: var(--wrong);
 }
 
-/* Close years: orange, still with the direction arrow. */
 .tile--higher-close,
 .tile--lower-close {
   background: var(--partial);
 }
 
-/* Only on real tiles (.tile is position: relative). The legend chips reuse the colour classes and
-   must not get this arrow, or it gets positioned against the whole page. */
-.tile.tile--higher::before,
-.tile.tile--lower::before,
-.tile.tile--higher-close::before,
-.tile.tile--lower-close::before {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-family: var(--font-hand);
-  font-size: 4.2rem;
-  font-weight: 700;
-  color: var(--pen-red);
-  pointer-events: none;
+/* Bigger, bolder corner arrow on direction tiles, since it carries the whole meaning. */
+.tile--higher .tile__icon,
+.tile--lower .tile__icon,
+.tile--higher-close .tile__icon,
+.tile--lower-close .tile__icon {
+  top: 1px;
+  right: 5px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  opacity: 1;
 }
-
-.tile.tile--higher::before,
-.tile.tile--higher-close::before { content: '↑'; }
-.tile.tile--lower::before,
-.tile.tile--lower-close::before { content: '↓'; }
 
 .tile__text {
   position: relative;
@@ -920,9 +908,18 @@ h3 {
 }
 
 .help__attrs dd {
-  margin: 0 0 8px;
-  color: var(--muted);
+  margin: 0 0 10px;
   font-size: 0.92rem;
+}
+
+.help__rule {
+  display: block;
+}
+
+.help__vals {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
 }
 
 .stats__row {

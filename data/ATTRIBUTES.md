@@ -101,32 +101,30 @@ Values: `Supervised`, `Unsupervised`, `Self-supervised`, `Reinforcement`, `N/A`
 
 ## 5. Field of origin (single)
 
-The field the defining work came from, judged by its author(s) and venue.
+**The academic discipline** the defining work came from, judged by its author(s) and venue.
+Only disciplines: *where* it was done (university or company) is not part of this attribute.
 
-Values: `Statistics`, `Mathematics`, `Information theory`, `Physics`, `Computer science`, `Industry lab`
+Values: `Statistics`, `Mathematics`, `Information theory`, `Physics`, `Computer science`
 
 - `Physics` = the defining work came from physics (Hopfield networks, simulated annealing, Metropolis MCMC).
-
-- `Industry lab` = the defining paper came from a company research lab **in the 2000s or later**
-  (Google, Meta, OpenAI, Yandex, ...). This keeps the first draft's Google/OpenAI/Meta idea for the modern terms.
-- Older industry work is classified by its discipline: Shannon at Bell Labs → Information theory,
-  Gosset at Guinness → Statistics, Vapnik/LeCun at Bell Labs → Computer science.
+- Company research is classified by its discipline: Shannon at Bell Labs → Information theory,
+  Gosset at Guinness → Statistics, Google's Transformer / Meta's PyTorch / Yandex's CatBoost → Computer science.
 - If it's unclear (for example statistics vs computer science for SVMs), pick one, explain
   why in `source`, and set `"verify": true`.
 
-*Why replace Origin:* Google/OpenAI/Meta/DeepMind/Microsoft/Academia/Other would put about
-55 of the ~70 candidates in "Academia".
+*History:* an `Industry lab` value existed until 2026-11-23. It was removed because it mixed a
+*kind of origin* with *disciplines*, so players couldn't predict which one a term would get.
 
 ## 6. Family (single)
 
-Which part of the field the term belongs to.
+**The kind of method (its lineage), not the time period.** A 2021 diffusion model is still Deep learning.
 
 | Value | Meaning | Examples |
 |---|---|---|
 | Foundations | Math/statistics used throughout ML, not an ML method itself | Entropy, Chain Rule, Odds, p-value, Tensor |
 | Classical ML | Non-neural methods and their tooling | Logistic Regression, Random Forest, SVM, PCA, XGBoost |
-| Deep learning | Neural networks before the transformer | Neural Network, CNN, LSTM, Word2Vec, ReLU |
-| LLM era | Transformers and what's built on them | Attention, Transformer, BERT, RAG |
+| Deep learning | Neural networks that aren't transformer-based | Neural Network, CNN, LSTM, Word2Vec, ReLU, GAN, Stable Diffusion |
+| Transformer era | Transformer models and the techniques built around them (prompting, alignment, fine-tuning, retrieval) | Attention, Transformer, BERT, ViT, CLIP, RAG, LoRA |
 
 *Changes from the first draft:* "Probabilistic" is replaced by "Foundations". Probabilistic would
 overlap with Classical ML (Naive Bayes is both), and the StatQuest terms need a home for pure
@@ -135,8 +133,9 @@ math and statistics.
 **Evaluation metrics** (AUC, Precision, R-squared, Deviance…) and **Cross Validation** → Classical ML:
 they come from classical model evaluation. Pure math/stat ideas and hypothesis tests → Foundations.
 
-**Edge cases:** Attention (2014, before transformers) → **LLM era**, because it's the core of
-transformers. **Gradient Descent / SGD → Foundations**, because they're general calculus-based
+**Edge cases:** Attention (2014, before transformers) → **Transformer era**, because it's the core of
+transformers. Stable Diffusion (2021) → **Deep learning**: latent diffusion with a U-Net, not a
+transformer model, even though it uses a text encoder. **Gradient Descent / SGD → Foundations**, because they're general calculus-based
 optimization that's also used in classical ML. **Backpropagation → Deep learning**, because it
 exists to train neural networks.
 
@@ -182,6 +181,12 @@ Every term can still be **guessed**.
 - **2026-11-22:** Batch 3 brings the total to 228 terms. Added the `daily` flag (split answer pool). New values: Category
   `Dataset` (MNIST, ImageNet, Iris, COCO), Task `Recommendation`, Field `Physics` (Hopfield,
   simulated annealing, MCMC).
+- **2026-11-23 (external review):** Field is disciplines only (`Industry lab` removed, 45 terms → their
+  discipline, all Computer science). Family `LLM era` renamed `Transformer era` and defined as the kind
+  of method, not the period (ViT fits; Stable Diffusion moved to Deep learning). Diffusion models
+  gain `Self-supervised` (denoising objective), which also keeps them distinct from Normalizing Flows.
+  The Year rule is now shown in How to play. The big faded arrow behind year/difficulty values was
+  removed for readability (the corner arrow is bigger instead).
 - **2026-11-23:** Orange showed up in only ~5% of guesses. Two changes: (1) years within ±5 are orange
   "close" tiles; (2) Task / Learning now list every *common* use, not only the main one (50 terms retagged:
   metrics gain `Evaluation`, SVR/AdaBoost/GLM/GP gain a second task, sequence models gain `Generation`,

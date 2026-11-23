@@ -659,14 +659,15 @@ function closeButton(dialog: HTMLDialogElement): HTMLButtonElement {
 }
 
 function openHelp(): void {
-  const values: [string, readonly string[]][] = [
-    ['Category', CATEGORIES],
-    ['Task', TASKS],
-    ['Learning', LEARNING_TYPES],
-    ['Year', ['year of the defining paper or publication']],
-    ['Field', FIELDS],
-    ['Family', FAMILIES],
-    ['Difficulty', DIFFICULTIES],
+  // [label, allowed values, rule in one line]
+  const values: [string, readonly string[], string][] = [
+    ['Category', CATEGORIES, 'What kind of thing the term is.'],
+    ['Task', TASKS, 'Every task it is commonly used for.'],
+    ['Learning', LEARNING_TYPES, 'Every setting it is commonly trained in; N/A if it is not a model or technique.'],
+    ['Year', [], 'Year of the defining paper, proposal or first release, e.g. Artificial Intelligence = 1955 (the Dartmouth proposal), not 1956 (the workshop). The source is shown when you solve it.'],
+    ['Field', FIELDS, 'The academic discipline the defining work came from (company research counts as computer science).'],
+    ['Family', FAMILIES, 'The kind of method, not the time period: "Transformer era" = transformer models and what is built around them (ViT, CLIP, RAG, LoRA...).'],
+    ['Difficulty', DIFFICULTIES, 'Roughly how far into learning ML you meet it.'],
   ];
   els.help.replaceChildren(
     closeButton(els.help),
@@ -694,7 +695,10 @@ function openHelp(): void {
     ),
     h('h3', {}, 'Attributes'),
     h('dl', { class: 'help__attrs' },
-      ...values.flatMap(([label, vals]) => [h('dt', {}, label), h('dd', {}, vals.join(' · '))]),
+      ...values.flatMap(([label, vals, rule]) => [
+        h('dt', {}, label),
+        h('dd', {}, h('span', { class: 'help__rule' }, rule), vals.length ? h('span', { class: 'help__vals' }, vals.join(' · ')) : null),
+      ]),
     ),
     h('h3', {}, 'Hints'),
     h('p', {}, `Stuck? Every ${HINT_EVERY} guesses unlock a hint (up to ${MAX_HINTS}). Use one to reveal any trait of the answer, such as its Category or Year. Really stuck? Give up to see the answer (it ends your streak).`),
