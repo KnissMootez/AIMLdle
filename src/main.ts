@@ -161,7 +161,9 @@ function softHyphenate(text: string): string {
 }
 
 const prefersReducedMotion =() => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const TILE_DELAY_MS = 110;
+/** Delay between tiles flipping in, left to right. Keep FLIP_MS in sync with the CSS flip animation. */
+const TILE_DELAY_MS = 280;
+const FLIP_MS = 550;
 
 // ---------- Autocomplete ----------
 
@@ -587,7 +589,7 @@ function render({ animateLatest = false } = {}): void {
     window.setTimeout(() => {
       renderResult();
       els.result.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, (COLUMNS.length + 2) * TILE_DELAY_MS + 400);
+    }, COLUMNS.length * TILE_DELAY_MS + FLIP_MS + 500); // last tile done, then a short beat
   } else {
     renderResult();
   }

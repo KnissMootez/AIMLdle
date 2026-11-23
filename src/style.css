@@ -695,7 +695,7 @@ h3 {
 }
 
 .tile--flip {
-  animation: flip 450ms ease both;
+  animation: flip 550ms ease both; /* keep in sync with FLIP_MS in main.ts */
 }
 
 @keyframes flip {
