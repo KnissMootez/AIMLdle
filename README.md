@@ -94,6 +94,11 @@ Netlify or any static host.
 Idea and testing: Mootez Kniss. Code written with Claude Code.
 Topic list inspired by StatQuest with Josh Starmer (not affiliated).
 
+## Privacy
+
+Anonymous visit and game-event counts (solved, gave up, shared…) via [GoatCounter](https://www.goatcounter.com):
+no cookies, no personal data. Progress and stats are stored only in your own browser (`localStorage`).
+
 ## License
 
 © 2026 Mootez Kniss. All rights reserved. See [LICENSE](LICENSE): you're welcome to play and read the

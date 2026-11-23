@@ -12,6 +12,7 @@ import {
 import { compareTerms, YEAR_CLOSE_WITHIN, type Tile, type TileState } from './compare.ts';
 import { dailyTerm, msUntilNextPuzzle, puzzleDate, puzzleNumber } from './daily.ts';
 import { guessesUntilNextHint, hintsAvailable, HINT_EVERY, MAX_HINTS, type TraitKey } from './hints.ts';
+import { track } from './analytics.ts';
 import { findExact, findMatches, normalize } from './search.ts';
 import { buildShareText } from './share.ts';
 import { BUCKETS, bucket, displayStreak, recordGiveUp, recordStart, recordWin } from './stats.ts';
@@ -59,6 +60,7 @@ function puzzleGame(puzzle: number): Game {
 const dailyGame = () => puzzleGame(today);
 
 function practiceGame(): Game {
+  track('practice-start');
   const pool = ANSWER_POOL.filter((t) => t.id !== dailyAnswer.id);
   return { mode: 'practice', puzzle: 0, answer: pool[Math.floor(Math.random() * pool.length)], guesses: [], hints: [], gaveUp: false };
 }
@@ -290,6 +292,7 @@ function submitGuess(term: Term): void {
     saved.games[game.puzzle] = game.guesses.map((t) => t.id);
     saveState(saved);
   }
+  if (won) track(`${game.mode}-win`);
   render({ animateLatest: true });
 }
 
@@ -314,6 +317,7 @@ function knownTraits(): Set<TraitKey> {
 function revealHint(key: TraitKey): void {
   if (game.hints.includes(key) || hintsAvailable(game.guesses.length, game.hints.length) <= 0) return;
   game.hints.push(key);
+  track('hint');
   hintPickerOpen = false;
   if (game.mode !== 'practice') {
     saved.hints[game.puzzle] = [...game.hints];
@@ -403,6 +407,7 @@ function giveUpNow(): void {
   giveUpArmed = false;
   window.clearTimeout(giveUpTimer);
   game.gaveUp = true;
+  track(`${game.mode}-giveup`);
   if (game.mode === 'daily') saved.stats = recordGiveUp(saved.stats);
   if (game.mode !== 'practice') {
     if (!saved.gaveUp.includes(game.puzzle)) saved.gaveUp.push(game.puzzle);
@@ -636,6 +641,7 @@ function toast(message: string): void {
 
 async function shareResult(): Promise<void> {
   const rows = game.guesses.map((g) => compareTerms(g, game.answer).map((t) => t.state));
+  track('share');
   const text = buildShareText(game.puzzle, rows, location.origin + location.pathname, {
     hints: game.hints.length,
     gaveUp: game.gaveUp,
@@ -760,6 +766,7 @@ function openStats(): void {
  * Clicking a name puts it in the input; the player still confirms the guess.
  */
 function openTerms(): void {
+  track('browse-terms');
   const guessed = guessedIds();
   const sorted = [...TERMS].sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
   const firstChar = (name: string) => {
@@ -860,6 +867,7 @@ function openArchive(): void {
     );
     item.addEventListener('click', () => {
       els.archive.close();
+      track('archive-play');
       switchGame(puzzleGame(p));
     });
     return h('li', {}, item);
@@ -899,6 +907,10 @@ function openAbout(): void {
     h('h3', {}, 'Credits'),
     h('p', {}, 'Idea and testing by Mootez Kniss. Built with Claude Code.'),
     h('p', { class: 'muted' }, 'Topic list inspired by StatQuest with Josh Starmer. Not affiliated with StatQuest.'),
+    h('p', { class: 'muted' },
+      'Privacy: anonymous visit and game counts (e.g. "a puzzle was solved") via ',
+      link('https://www.goatcounter.com', 'GoatCounter'),
+      '. No cookies, no personal data. Your progress stays in your own browser.'),
     h('p', { class: 'muted' }, '© 2026 Mootez Kniss. All rights reserved.'),
   );
   els.about.showModal();
