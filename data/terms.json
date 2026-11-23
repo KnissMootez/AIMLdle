@@ -1538,7 +1538,7 @@
   {
     "id": "expectation-maximization",
     "name": "Expectation–Maximization (EM)",
-    "aliases": ["em algorithm", "expectation maximization", "em", "gaussian mixture model", "gmm"],
+    "aliases": ["em algorithm", "expectation maximization", "em"],
     "category": "Optimization",
     "task": ["Clustering"],
     "learningType": ["N/A"],
@@ -1550,6 +1550,22 @@
     "explanation": "Fits models with hidden variables by alternating two steps: guess the hidden parts given the parameters (E), then refit the parameters given those guesses (M). Used for Gaussian mixtures.",
     "source": "Dempster, Laird & Rubin, 'Maximum Likelihood from Incomplete Data via the EM Algorithm', JRSS B, 1977",
     "verify": false
+  },
+  {
+    "id": "gmm",
+    "name": "Gaussian Mixture Model (GMM)",
+    "aliases": ["gmm", "gaussian mixture model", "mixture of gaussians", "mixture model"],
+    "category": "Model",
+    "task": ["Clustering"],
+    "learningType": ["Unsupervised"],
+    "year": 1894,
+    "field": "Statistics",
+    "family": "Classical ML",
+    "difficulty": "Intermediate",
+    "daily": false,
+    "explanation": "Models the data as a blend of several bell curves (Gaussians), each with its own mean, spread and weight. Unlike K-means it gives soft clusters: every point gets a probability of belonging to each one. Usually fitted with the EM algorithm.",
+    "source": "Karl Pearson, 'Contributions to the Mathematical Theory of Evolution', Philosophical Transactions of the Royal Society A, 1894 (a mixture of two normal distributions; fitted by EM since Dempster, Laird & Rubin, 1977)",
+    "verify": true
   },
   {
     "id": "hmm",

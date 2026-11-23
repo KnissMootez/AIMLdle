@@ -46,6 +46,12 @@ What kind of thing the term *is*. Ask the questions below in order; the first "y
 the two would be hard to tell apart. "Optimizer" is renamed Optimization. "Loss" is merged into
 Component. "Statistical test" and "Component" are new.
 
+**"Algorithm" vs Model:** methods you fit to data and then use to predict, cluster or embed are **Model**,
+even when people usually call them algorithms: every clustering method (K-means, K-medoids, DBSCAN,
+hierarchical, mean shift, spectral, GMM, SOM) and every dimensionality-reduction method (PCA, t-SNE,
+UMAP, ICA...). Procedures that fit *another* model's parameters are **Optimization** (gradient descent,
+EM, backpropagation). So GMM is a Model and EM, which fits it, is an Optimization.
+
 **Ridge / Lasso / Elastic Net → Model.** The terms are named as regression models
 ("Ridge Regression"), and that's how the videos teach them. The penalty itself (L1/L2) is
 the Technique, if it's ever added as its own term.
@@ -181,6 +187,9 @@ Every term can still be **guessed**.
 - **2026-11-22:** Batch 3 brings the total to 228 terms. Added the `daily` flag (split answer pool). New values: Category
   `Dataset` (MNIST, ImageNet, Iris, COCO), Task `Recommendation`, Field `Physics` (Hopfield,
   simulated annealing, MCMC).
+- **2026-11-23 (external review, part 2):** Audited clustering/dim-reduction categories (all Model, consistent).
+  "GMM" was an alias of EM (Optimization), so typing GMM showed the wrong category: GMM is now its own
+  Model term (229 terms). Legend and help now share one wording ("later / harder", "earlier / easier").
 - **2026-11-23 (external review):** Field is disciplines only (`Industry lab` removed, 45 terms → their
   discipline, all Computer science). Family `LLM era` renamed `Transformer era` and defined as the kind
   of method, not the period (ViT fits; Stable Diffusion moved to Deep learning). Diffusion models

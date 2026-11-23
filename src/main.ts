@@ -127,11 +127,29 @@ const STATE_LABEL: Record<TileState, string> = {
   correct: 'match',
   partial: 'partial match',
   wrong: 'no match',
-  higher: 'answer is higher',
-  lower: 'answer is lower',
-  'higher-close': `close: answer is up to ${YEAR_CLOSE_WITHIN} higher`,
-  'lower-close': `close: answer is up to ${YEAR_CLOSE_WITHIN} lower`,
+  higher: 'answer is later / harder',
+  lower: 'answer is earlier / easier',
+  'higher-close': `close: answer is up to ${YEAR_CLOSE_WITHIN} years later`,
+  'lower-close': `close: answer is up to ${YEAR_CLOSE_WITHIN} years earlier`,
 };
+
+/**
+ * One wording for the tile meanings, used by BOTH the legend under the board and the help dialog,
+ * so they can never disagree. [chip classes + symbols, short text]
+ */
+const LEGEND: [[string, string][], string][] = [
+  [[['tile--correct', '✓']], 'match'],
+  [[['tile--partial', '≈']], 'partial: some values shared'],
+  [[['tile--partial', '↑'], ['tile--partial', '↓']], `close: year within ${YEAR_CLOSE_WITHIN}`],
+  [[['tile--wrong', '✗']], 'no match'],
+  [[['tile--higher', '↑']], STATE_LABEL.higher],
+  [[['tile--lower', '↓']], STATE_LABEL.lower],
+];
+
+function legendItems(tag: 'span' | 'li', itemClass: string): HTMLElement[] {
+  return LEGEND.map(([chips, text]) =>
+    h(tag, { class: itemClass }, ...chips.map(([cls, sym]) => h('span', { class: `chip ${cls}` }, sym)), ` ${text}`));
+}
 
 // Soft hyphens (­) mark where long words may break in narrow tiles, e.g. "Classifi-cation".
 // Browsers only show the hyphen when they actually break there.
@@ -663,7 +681,7 @@ function closeButton(dialog: HTMLDialogElement): HTMLButtonElement {
 function openHelp(): void {
   // [label, allowed values, rule in one line]
   const values: [string, readonly string[], string][] = [
-    ['Category', CATEGORIES, 'What kind of thing the term is.'],
+    ['Category', CATEGORIES, 'What kind of thing the term is. Methods you fit to data to then predict, cluster or embed count as Model, even if people call them algorithms (K-means, DBSCAN, PCA, GMM). Procedures that fit another model\'s parameters are Optimization (Gradient Descent, EM).'],
     ['Task', TASKS, 'Every task it is commonly used for.'],
     ['Learning', LEARNING_TYPES, 'Every setting it is commonly trained in; N/A if it is not a model or technique.'],
     ['Year', [], 'Year of the defining paper, proposal or first release, e.g. Artificial Intelligence = 1955 (the Dartmouth proposal), not 1956 (the workshop). The source is shown when you solve it.'],
@@ -686,15 +704,8 @@ function openHelp(): void {
       return p;
     })(),
     h('p', {}, 'Each guess shows how its attributes compare with the answer:'),
-    h('ul', { class: 'help__legend' },
-      h('li', {}, h('span', { class: 'chip tile--correct' }, '✓'), ' same value'),
-      h('li', {}, h('span', { class: 'chip tile--partial' }, '≈'), ' some values shared (Task, Learning)'),
-      h('li', {}, h('span', { class: 'chip tile--partial' }, '↑'), h('span', { class: 'chip tile--partial' }, '↓'),
-        ` close: the year is within ${YEAR_CLOSE_WITHIN}, and the arrow says which way`),
-      h('li', {}, h('span', { class: 'chip tile--wrong' }, '✗'), ' nothing shared'),
-      h('li', {}, h('span', { class: 'chip tile--higher' }, '↑'), h('span', { class: 'chip tile--lower' }, '↓'),
-        ' the answer is later / harder (↑) or earlier / easier (↓)'),
-    ),
+    h('ul', { class: 'help__legend' }, ...legendItems('li', '')),
+    h('p', { class: 'muted' }, 'Partial only happens on Task and Learning (they can have several values). Arrows appear on Year (later / earlier) and Difficulty (harder / easier).'),
     h('h3', {}, 'Attributes'),
     h('dl', { class: 'help__attrs' },
       ...values.flatMap(([label, vals, rule]) => [
@@ -907,6 +918,8 @@ els.browse.title = `Browse all ${TERMS.length} terms`;
 els.browse.addEventListener('click', openTerms);
 
 // ---------- Start ----------
+
+$('legend').replaceChildren(...legendItems('span', 'legend__item'));
 
 render();
 if (!saved.seenHelp) openHelp();
